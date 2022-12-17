@@ -22,6 +22,10 @@ result = job.result()
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 
+from qiskit import *
+%matplotlib inline
+from qiskit.tools.visualization import plot_histogram
+
 # Quantum Guessing Game:
 
 # A secret string is inputted by the user, and the Quantum Computer can guess it in one try
@@ -49,25 +53,30 @@ secretnumber = bin(number) #decimal to binary
 
 circuit = QuantumCircuit(len(secretnumber)+1,len(secretnumber))
 
-circuit.h(range(len(secretnumber))) #range length of secret number
-circuit.x(len(secretnumber)) #last qubit (if 100101, 6)
+#creating a hadamard gate, used to convert qubit from clustering state to superposed state
+circuit.h(range(len(secretnumber))) #range length of secret number 
+
+circuit.x(len(secretnumber)) #last qubit (if 100101, 6) #x gate on the last qubit 
 circuit.h(len(secretnumber))#last qubit (if 100101, 6)
 
 circuit.barrier()
 
-for ii, yesno in enumerate(reversed(secretnumber)):
+for ii, yesno in enumerate(reversed(secretnumber)): #for [i , i
     if yesno == '1':
         circuit.cx(ii, len(secretnumber))
                            
 
 #101001
-# circuit.cx(5,6) #building the secret number box 
-# circuit.cx(3,6)
-# circuit.cx(0,6)
+# circuit.cx(5,6) controlled not gate, being used when bit has a 1 in it. For example above
+# circuit.cx(3,6) between 5 and 6, there is a 1, between 3 and 6, there is a 1, and between 
+# circuit.cx(0,6) 0 and 6, there is a 1
+
+
 
 circuit.barrier()
 
 circuit.h(range((len(secretnumber))))
+#apply another set of hadamard gates to finish the circuit 
 
 circuit.barrier()
 
